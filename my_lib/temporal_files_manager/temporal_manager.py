@@ -1,6 +1,6 @@
 """ coding: utf-8
-Created by rsanchez on 15/08/2018
-Este proyecto ha sido desarrollado en la Gerencia de Operaciones de CENACE
+Created by rsanchez on 10/03/2021
+Este proyecto ha sido desarrollado en la Gerencia de Desarrollo técnico de CENACE
 Mateo633
 """
 import os

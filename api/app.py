@@ -1,11 +1,8 @@
 """"
       Created by Roberto Sánchez A.
-      API de Autentificación de usuarios
+      API de manual de clasificador de Puestos - Proyecto Gestion Concocimiento Fase 3
       Servicios:
-        - Creación, edición, eliminación de usuarios
-        - Creación, edición, eliminación de grupos
-        - Creación, edición, eliminación de recursos
-        - Manejo de Roles
+
 
 The auth workflow works as follows:
 

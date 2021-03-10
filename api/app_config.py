@@ -1,7 +1,7 @@
 # This script allows the flask configuration
 # Created by Roberto Sánchez A.
 # Gerencia de Desarrollo Técnico - CENACE
-# Septiembre 2020
+# Marzo 2021
 
 # General imports:
 import datetime as dt
