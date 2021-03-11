@@ -4,7 +4,7 @@ from dto.mongo_classes import *
 
 class PerfilPuesto(Document):
     public_id = StringField(required=True, default=None, unique=True)
-    id = StringField(required=True, default=None, unique=True)
+    idx = StringField(required=True, default=None, unique=True)
     nivel = StringField(required=True, default="")
     rol = StringField(required=True, default="")
     grupo_ocupacional = StringField(required=True)
@@ -21,13 +21,13 @@ class PerfilPuesto(Document):
             self.public_id = str(uuid.uuid4())
 
     def __repr__(self):
-        return f"<PerfilPuesto {self.id}, {self.grupo_ocupacional}, {self.instruccion_formal}>"
+        return f"<PerfilPuesto {self.idx}, {self.grupo_ocupacional}, {self.instruccion_formal}>"
 
     def __str__(self):
-        return f"<PerfilPuesto {self.id}, {self.grupo_ocupacional}, {self.instruccion_formal}>"
+        return f"<PerfilPuesto {self.idx}, {self.grupo_ocupacional}, {self.instruccion_formal}>"
 
     def to_dict(self):
-        return dict(public_id=self.public_id, id=self.id, nivel=self.nivel, rol=self.rol,
+        return dict(public_id=self.public_id, idx=self.idx, nivel=self.nivel, rol=self.rol,
                     grupo_ocupacional=self.grupo_ocupacional, grado=self.grado,
                     instruccion_formal=self.instruccion_formal, experiencia=self.experiencia,
                     updated=self.updated.strftime(init.DEFAULT_DATE_FORMAT),

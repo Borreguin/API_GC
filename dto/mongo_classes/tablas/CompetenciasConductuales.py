@@ -4,7 +4,7 @@ from dto.mongo_classes import *
 
 class CompetenciasConductuales(Document):
     public_id = StringField(required=True, default=None, unique=True)
-    id = StringField(required=True, default=None, unique=True)
+    idx = StringField(required=True, default=None, unique=True)
     denominacion_competencia = StringField(required=True, default="")
     definicion = StringField(required=True, default="")
     item = IntField(required=True, default=0)
@@ -20,13 +20,13 @@ class CompetenciasConductuales(Document):
             self.public_id = str(uuid.uuid4())
 
     def __repr__(self):
-        return f"<CompetenciasConductuales {self.id}, {self.denominacion_competencia}, {self.item}, {self.nivel}>"
+        return f"<CompetenciasConductuales {self.idx}, {self.denominacion_competencia}, {self.item}, {self.nivel}>"
 
     def __str__(self):
-        return f"<CompetenciasConductuales {self.id}, {self.denominacion_competencia}, {self.item}, {self.nivel}>"
+        return f"<CompetenciasConductuales {self.idx}, {self.denominacion_competencia}, {self.item}, {self.nivel}>"
 
     def to_dict(self):
-        return dict(public_id=self.public_id, id=self.id,
+        return dict(public_id=self.public_id, idx=self.idx,
                     denominacion_competencia=self.denominacion_competencia, definicion=self.definicion, item=self.item,
                     nivel=self.nivel, comportamiento_observable=self.comportamiento_observable,
                     updated=self.updated.strftime(init.DEFAULT_DATE_FORMAT),

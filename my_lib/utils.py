@@ -3,7 +3,7 @@ import datetime as dt
 import hashlib
 import json
 import traceback
-
+from random import randint
 import pandas as pd
 import pickle as pkl
 
@@ -99,26 +99,6 @@ def read_excel(file_name):
         return dt_excel, "[{0}] Leído correctamente".format(file_name)
 
 
-def create_datetime_and_span(ini_date: dt.datetime, end_date: dt.datetime):
-    """ Create time_range """
-    try:
-        time_range_aux = pi._time_range(str(ini_date), str(end_date))
-    except Exception as e:
-        return None, None, "No se puede crear el time_range con los siguientes parámetros [{0}, {1}]" \
-            .format(ini_date, end_date)
-
-    """ Create Span value """
-    span_aux = end_date - ini_date
-    try:
-        span_aux = max(1, span_aux.days)
-        span_aux = pi._span(str(span_aux) + "d")
-    except Exception as e:
-        return None, None, "No se pudo calcular el span [{0}, {1}] \n ".format(ini_date, end_date) + str(e)
-
-    return time_range_aux, span_aux, "Cálculo correcto de time_range y span [{0}, {1}, {2}]".format(ini_date, end_date,
-                                                                                                    span_aux)
-
-
 def group_files(repo, files):
     # let´s group files with similar name
     to_work = [os.path.splitext(f)[0] for f in files]
@@ -158,7 +138,6 @@ def get_id(params: list):
 
 
 def retrieve_from_file(temp_file, id):
-
     if os.path.exists(temp_file):
         with open(temp_file) as json_file:
             resp = json.load(json_file)
@@ -171,7 +150,6 @@ def retrieve_from_file(temp_file, id):
 
 
 def save_in_file(temp_file, id, data_dict):
-
     if not os.path.exists(temp_file):
         to_save = {id: data_dict}
     else:
@@ -183,7 +161,7 @@ def save_in_file(temp_file, id, data_dict):
         json.dump(to_save, outfile, indent=4, sort_keys=True)
 
 
-def is_active(path_file, id: str,  time_delta: dt.timedelta):
+def is_active(path_file, id: str, time_delta: dt.timedelta):
     try:
         value_dict = retrieve_from_file(path_file, id)
         if value_dict is None:
@@ -199,3 +177,59 @@ def is_active(path_file, id: str,  time_delta: dt.timedelta):
         tb = traceback.extract_stack()
         print(f"{str(e)} \n {tb}")
         return True
+
+
+def get_df_from_excel(excel_path, sheet_name):
+    exists = os.path.exists(excel_path)
+    df = pd.DataFrame()
+    detalle = ""
+    try:
+        if exists:
+            df = pd.read_excel(excel_path, sheet_name=sheet_name, engine='openpyxl')
+            return True, df, "Archivo Excel leído correctamente"
+    except Exception as e:
+        tb = traceback.extract_stack()
+        detalle = f"{str(e)} \n {tb}"
+    return False, df, f"No se puede leer la hoja {sheet_name} en el archivo {excel_path} \n{detalle}"
+
+
+def check_string_in_df(df: pd.DataFrame, columns: list):
+    try:
+        for column in columns:
+            df[column] = [str(v).strip() for v in df[column]]
+        return True, df, f"Todas los valores han sido validados"
+    except Exception as e:
+        return False, df, f"No es posible realizar esta operación: {str(e)}"
+
+
+def check_int_in_df(df: pd.DataFrame, columns: list):
+    try:
+        for column in columns:
+            df[column] = [int(v) for v in df[column]]
+        return True, f"Todas los valores han sido validados"
+    except Exception as e:
+        return False, f"No es posible realizar esta operación: {str(e)}"
+
+
+def check_float_in_df(df: pd.DataFrame, columns: list):
+    try:
+        for column in columns:
+            df[column] = [float(v) for v in df[column]]
+        return True, df, f"Todas los valores han sido validados"
+    except Exception as e:
+        return False, df, f"No es posible realizar esta operación: {str(e)}"
+
+
+def create_temporal_excel_from_args(args, temp_path):
+    if args['excel_file'].mimetype in 'application/xls, application/vnd.ms-excel,  application/xlsx' \
+                                      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        excel_file = args['excel_file']
+        filename = excel_file.filename
+        stream_excel_file = excel_file.stream.read()
+        # path del archivo temporal a guardar para poderlo leer inmediatamente
+        temp_file = os.path.join(temp_path, f"{str(randint(0, 100))}_{filename}")
+        with open(temp_file, 'wb') as f:
+            f.write(stream_excel_file)
+        return os.path.exists(temp_file), temp_file, stream_excel_file
+    else:
+        return False, None, None

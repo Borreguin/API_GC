@@ -105,6 +105,8 @@ for repo in REPOS:
 # getting the definitive path for each one in same order:
 TEMP_REPO, DB_REPO, LOG_REPO = FINAL_REPO
 
+# other configurations:
+dup_key_error = "duplicate key error"
 
 # Default Class for Logging messages about this API
 class LogDefaultConfig():

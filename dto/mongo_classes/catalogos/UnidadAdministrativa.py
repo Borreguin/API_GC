@@ -4,7 +4,7 @@ from dto.mongo_classes import *
 
 class UnidadAdministrativa(Document):
     public_id = StringField(required=True, default=None, unique=True)
-    id = StringField(required=True, default=None, unique=True)
+    idx = StringField(required=True, default=None, unique=True)
     cod_unidad_administrativa = StringField(required=True, unique=True)
     nombre = StringField(required=True, unique=True)
     updated = DateTimeField(default=dt.datetime.now())
@@ -23,7 +23,7 @@ class UnidadAdministrativa(Document):
         return f"<UnidadAdministrativa {self.cod_unidad_administrativa}, {self.nombre}>"
 
     def to_dict(self):
-        return dict(public_id=self.public_id, id=self.id,
+        return dict(public_id=self.public_id, idx=self.idx,
                     cod_unidad_administrativa=self.cod_unidad_administrativa,
                     updated=self.updated.strftime(init.DEFAULT_DATE_FORMAT),
                     document=self.document)

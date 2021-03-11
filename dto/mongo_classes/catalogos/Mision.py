@@ -4,7 +4,7 @@ from dto.mongo_classes import *
 
 class Mision(Document):
     public_id = StringField(required=True, default=None, unique=True)
-    id = StringField(required=True, default=None, unique=True)
+    idx = StringField(required=True, default=None, unique=True)
     nombre = StringField(required=True, unique=True)
     descripcion = StringField(required=True)
     updated = DateTimeField(default=dt.datetime.now())
@@ -23,7 +23,7 @@ class Mision(Document):
         return f"<Mision {self.nombre}, {self.descripcion}>"
 
     def to_dict(self):
-        return dict(public_id=self.public_id, id=self.id,
+        return dict(public_id=self.public_id, idx=self.idx,
                     nombre=self.nombre, descripcion=self.descripcion,
                     updated=self.updated.strftime(init.DEFAULT_DATE_FORMAT),
                     document=self.document)

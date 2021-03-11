@@ -3,7 +3,7 @@
 
 config = dict()
 config["name"] = "API Sistema Central "
-config["API_URL_PREFIX"] = "api-gc2"
+config["API_URL_PREFIX"] = "api-gc3"
 config["version"] = "0.1"
 config["PORT"] = 7821
 config["DEBUG"] = True

@@ -50,10 +50,10 @@ from api import app
 
 """ EndPoints """
 # namespaces: Todos los servicios de esta API
-# from api.services.ToDelete.endpoints.api_Manage_Comp_Root import ns as namespace_Comp_Root
+from api.services.Catalogos.endpoints.apiCatalogos import ns as namespace_catalogos
 
 """ global variables """
-log = init.LogDefaultConfig("app_flask.log").logger
+from api.app_config import log
 
 
 def adding_end_points(blueprint, app):
@@ -66,7 +66,7 @@ def adding_end_points(blueprint, app):
 
     # adding Endpoints to this API
     # añadiendo los servicios de la API (EndPoints)
-    # api_p.add_namespace(namespace_Comp_Root)
+    api_p.add_namespace(namespace_catalogos)
 
     # registrando las rutas:
     app.register_blueprint(blueprint)
@@ -129,11 +129,10 @@ def main():
     app = build_app()
 
     # initializing this API
-    ts = dt.datetime.now().strftime('[%Y-%b-%d %H:%M:%S.%f]')
     if init.DEBUG:
-        log.info(f'>>>>> {ts} Starting development server <<<<<')
+        log.info(f'>>>>> Starting development server <<<<<')
     else:
-        log.info(f'>>>>> {ts} Starting production server <<<<<')
+        log.info(f'>>>>> Starting production server <<<<<')
 
     log.info(f">>>>> API running over: {init.API_URL_PREFIX}")
     # serve the application
