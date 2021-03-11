@@ -35,4 +35,4 @@ class SRNodeFromExcel(Resource):
             return dict(success=False, msg=msg), 409
         for ambito in AmbitoLst:
             ambito.save()
-        return dict(success=True)
+        return dict(success=True), 200

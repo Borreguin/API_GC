@@ -13,6 +13,7 @@ from flask import request
 
 # import custom configuration:
 from flask_mongoengine import MongoEngine
+from mongoengine import NotUniqueError
 from pymongo import MongoClient
 
 from settings import initial_settings as init
@@ -20,8 +21,10 @@ from settings import initial_settings as init
 # log events:
 log = init.LogDefaultConfig("app_flask.log").logger          # Activity Logger
 error_log = init.LogDefaultConfig("app_errors.log").logger        # Error logger
+mongo_client = init.MONGOCLIENT_SETTINGS.copy()
 
-# DataBase SQLite Configuration
+
+# API Configurations
 def create_app():
     app = Flask(__name__)                   # Flask application
     app = configure_app(app)                # general swagger configuration
@@ -62,9 +65,9 @@ def log_after_request(app):
         # ts = dt.datetime.now().strftime('[%Y-%b-%d %H:%M:%S.%f]')
         msg = f"{request.remote_addr} {request.method} {request.scheme}" \
               f"{request.full_path} {response.status}"
-        if 200 >= response.status_code < 400:
+        if response.status_code < 400:
             log.info(msg)
-        elif 400 >= response.status_code < 500:
+        elif response.status_code < 500:
             log.warning(msg)
         elif response.status_code >= 500:
             log.error(msg)
@@ -72,40 +75,60 @@ def log_after_request(app):
 
 
 def log_default_error_handler(app):
+    @app.errorhandler(NotUniqueError)
+    def not_unique_error_handler(e):
+        msg = f" {request.remote_addr} {request.method} {request.scheme}" \
+              f"{request.full_path} \n{str(e)}"
+        error_log.error(msg)
+        success, msg, details = get_conflict_in_db(e)
+        error_log.error(msg)
+        return dict(success=False, msg=msg, details=details), 409
+
     @app.errorhandler(Exception)
     def default_error_handler(e):
         # ts = dt.datetime.now().strftime('[%Y-%b-%d %H:%M:%S.%f]')
         msg = f" {request.remote_addr} {request.method} {request.scheme}" \
-              f"{request.full_path}"
+              f"{request.full_path} \n{str(e)}"
         error_log.error(msg)
-        error_log.error(traceback.format_exc())
         if hasattr(e, 'data'):
             return dict(success=False, msg=str(e.data["errors"])), 400
-        if init.dup_key_error in str(e):
 
-            r_exp = "collection: (.*) index:"
-            db, collection = re.search(r_exp, str(e)).group(1).split(".")
-            mongo_client = init.MONGOCLIENT_SETTINGS
-            db_c = mongo_client.pop('db', None)
-            if db != db_c:
-                print(f"No hay coincidencia de base de datos: se esperaba {db} pero se encuentra configurado: {db_c}")
-            r_exp = "key: {(.*)}"
-            key, value = re.search(r_exp, str(e)).group(1).strip().split(":")
-            filter_dict = {key.strip(): value.replace('"', "").strip()}
-            client = MongoClient(**mongo_client)
-            collection_to_search = client[db][collection]
-            conflict_object = collection_to_search.find_one(filter_dict)
-            client.close()
-            to_send = dict()
-            for n, k in enumerate(conflict_object.keys()):
-                if n > 4:
-                    break
-                elif "id" not in k:
-                    to_send[k] = str(conflict_object[k])
-            basic_info = to_send.copy()
-            to_send["más_detalles"] = str(conflict_object["_id"])
-            to_send["conflicto"] = filter_dict
-            return dict(success=False, msg=f"Elemento duplicado en "
-                                              f"conflicto con: {basic_info}", details=to_send), 409
+        error_log.error(traceback.format_exc())
         return dict(success=False, msg=str(e)), 500
 
+
+def get_conflict_in_db(e):
+    try:
+        # Extraendo los datos de DB y la colleccion
+        r_exp = "(collection:)(.*?)(index:)"
+        rsp = re.search(r_exp, str(e)).groups()
+        if len(rsp) == 3:
+            db, collection = rsp[1].strip().split(".")
+        else:
+            return False, str(e), dict()
+        # Extraendo la llave valor para filtrar
+        r_exp = "(key: {)(.*?)(},)"
+        rsp = re.search(r_exp, str(e)).groups()
+        if len(rsp) == 3:
+            key, value = rsp[1].strip().split(":")
+        else:
+            return False, str(e), dict()
+        filter_dict = {key.strip(): value.replace('"', "").strip()}
+        mongo_client.pop('db', None)
+        client = MongoClient(**mongo_client)
+        collection_to_search = client[db][collection]
+        conflict_object = collection_to_search.find_one(filter_dict)
+        client.close()
+        to_send = dict()
+        for n, k in enumerate(conflict_object.keys()):
+            if n > 4:
+                break
+            elif "id" not in k:
+                to_send[k] = str(conflict_object[k])
+        basic_info = filter_dict.copy()
+        basic_info.update(to_send)
+        to_send["más_detalles"] = str(conflict_object["_id"])
+        to_send["conflicto"] = filter_dict
+        return True, f"Elemento duplicado en conflicto con: {basic_info}", to_send
+    except Exception as e:
+        return False, f"No se pudo determinar el conflicto", dict()

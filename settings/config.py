@@ -14,7 +14,7 @@ config["RESTPLUS_MASK_SWAGGER"] = False
 config["RESTPLUS_ERROR_404_HELP"] = False
 
 # MONGODB CONFIGURATION
-config["MONGOCLIENT_SETTINGS"] = {"host": "localhost", "port": 2717, "db": "DB_DISP_EMS"}
+config["MONGOCLIENT_SETTINGS"] = {"host": "localhost", "port": 2717, "db": "GESTION_CONOCIMIENTO_F3"}
 config["MONGO_LOG_LEVEL"] = {"value": "OFF", "options": ["ON", "OFF"]}
 
 # User configurations
