@@ -18,7 +18,8 @@ excel_upload.add_argument('excel_file',
                          required=True,
                          help='xls, xlsx file')
 excel_upload_w_option = excel_upload
-excel_upload_w_option.add_argument('option', type=str, required=False, help="'REEMPLAZAR' para sustituir")
+excel_upload_w_option.add_argument('option', type=str, required=False,
+                                   help="Valor opcional: 'REEMPLAZAR' para sustituir todos los registros")
 
 file_upload = reqparse.RequestParser()
 file_upload.add_argument('file',

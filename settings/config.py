@@ -1,5 +1,6 @@
 # API de Authentfication usando JWT
 # Configuraciones iniciales de la API
+import os
 
 config = dict()
 config["name"] = "API Sistema Central "
@@ -33,6 +34,7 @@ config["ROTATING_FILE_HANDLER_LOG_LEVEL"] = {"value": "info", "options": ["error
 config["TEMP_REPO"] = "temp"
 config["LOG_REPO"] = "logs"
 config["DB_REPO"] = "_db"
+config["EXCEL_REPO"] = os.path.join(config["DB_REPO"], "excel_repo")
 
 config["SUPPORTED_FORMAT_DATES"] = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d", "%Y-%m-%d %H:%M:%S.%f"]
 config["DEFAULT_DATE_FORMAT"] = "%Y-%m-%d %H:%M:%S"

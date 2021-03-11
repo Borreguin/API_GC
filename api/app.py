@@ -50,7 +50,7 @@ from api import app
 
 """ EndPoints """
 # namespaces: Todos los servicios de esta API
-from api.services.Catalogos.endpoints.apiCatalogos import ns as namespace_catalogos
+from api.services.Catalogos.endpoints.apiCatalogosAsExcel import ns as namespace_catalogos
 
 """ global variables """
 from api.app_config import log

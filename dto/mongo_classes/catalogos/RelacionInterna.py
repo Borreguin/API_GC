@@ -3,13 +3,14 @@ from dto.mongo_classes import *
 from my_lib.utils import create_excel_file_from_dicts
 
 
-class PuestoFuncionario(Document):
+class RelacionInterna(Document):
     public_id = StringField(required=True, default=None, unique=True)
     idx = StringField(required=True, default=None, unique=True)
-    puesto_nombre = StringField(required=True, unique=True)
+    codigo = StringField(required=True, unique=True)
+    nombre = StringField(required=True, unique=True)
     updated = DateTimeField(default=dt.datetime.now())
-    document = StringField(required=True, default="PuestoFuncionario")
-    meta = {"collection": "CATALOGO|PuestoFuncionario"}
+    document = StringField(required=True, default="RelacionInterna")
+    meta = {"collection": "CATALOGO|RelacionInterna"}
 
     def __init__(self, *args, **values):
         super().__init__(*args, **values)
@@ -17,36 +18,37 @@ class PuestoFuncionario(Document):
             self.public_id = str(uuid.uuid4())
 
     def __repr__(self):
-        return f"<Funcionario {self.idx}, {self.puesto_nombre}>"
+        return f"<RelacionInterna {self.codigo},{self.nombre}>"
 
     def __str__(self):
-        return f"<Funcionario {self.idx}, {self.puesto_nombre}>"
+        return f"<RelacionInterna {self.codigo},{self.nombre}>"
 
     def to_dict(self):
-        return dict(public_id=self.public_id, idx=self.idx,
-                    puesto_nombre=self.puesto_nombre, updated=self.updated.strftime(init.DEFAULT_DATE_FORMAT),
+        return dict(public_id=self.public_id, idx=self.idx, codigo=self.codigo, nombre=self.nombre,
+                    updated=self.updated.strftime(init.DEFAULT_DATE_FORMAT),
                     document=self.document)
 
     def to_update(self):
-        return dict(idx=self.idx,
-                    puesto_nombre=self.puesto_nombre, updated=self.updated.strftime(init.DEFAULT_DATE_FORMAT),
+        return dict(idx=self.idx, nombre=self.nombre, codigo=self.codigo,
+                    updated=self.updated.strftime(init.DEFAULT_DATE_FORMAT),
                     document=self.document)
 
 
-class PuestoFuncionarioAsDataFrame:
+class RelacionInternaAsDataFrame:
     def __init__(self, excel_path=None):
         """
-        This class allows to get PuestoFuncionario's DataFrame from Excel or Mongo DataBase
+        This class allows to get RelacionInterna's DataFrame from Excel or Mongo DataBase
         :param excel_path: If one gets a dataFrame from excel
         """
         self.excel_path = excel_path
-        self.sheet_name = "catalogo_puesto"
+        self.sheet_name = "relaciones_internas"
         # columns for this DataFrame
         self.cl_id = "idx"
-        self.cl_puesto_nombre = "puesto_nombre"
+        self.cl_codigo = "codigo"
+        self.cl_nombre = "nombre"
         self.df = pd.DataFrame()
         # columns to check in the excel file
-        self.main_columns = [self.cl_id, self.cl_puesto_nombre]
+        self.main_columns = [self.cl_id, self.cl_codigo, self.cl_nombre]
         self.has_valid_df = False
 
     def validate(self):
@@ -74,7 +76,7 @@ class PuestoFuncionarioAsDataFrame:
         if self.df.empty:
             return False, f"La hoja {self.sheet_name} se encuentra vacía"
 
-        success, self.df, msg = u.check_string_in_df(self.df, [self.cl_id, self.cl_puesto_nombre])
+        success, self.df, msg = u.check_string_in_df(self.df, [self.cl_id, self.cl_codigo])
         if not success:
             return False, msg
         # if all is correct then:
@@ -82,7 +84,7 @@ class PuestoFuncionarioAsDataFrame:
         return True, f"Hoja {self.sheet_name} validada correctamente"
 
     def get_object_list_from_excel(self):
-        # gets a list of PuestoFuncionario's objects
+        # gets a list of RelacionInterna's objects
         if not self.has_valid_df:
             # validate the excel file as DataFrame
             success, msg = self.validate()
@@ -95,14 +97,14 @@ class PuestoFuncionarioAsDataFrame:
             lst = list()
             for idx in self.df.index:
                 param = dict(self.df.iloc[idx])
-                item = PuestoFuncionario(**param)
+                item = RelacionInterna(**param)
                 lst.append(item)
             return True, lst, "Lista de objetos creada de manera correcta"
         except Exception as e:
-            return False, list(), f"Ha ocurrido un error al generar los objectos tipo PuestoFuncionario: {str(e)}"
+            return False, list(), f"Ha ocurrido un error al generar los objectos tipo RelacionInterna: {str(e)}"
 
     def get_excel_from_db(self, path_file: str, columns: list = None):
-        items_as_dict = [it.to_dict() for it in PuestoFuncionario.objects.all()]
+        items_as_dict = [it.to_dict() for it in RelacionInterna.objects.all()]
         if len(items_as_dict) == 0:
             return False, "No existen registros asociados"
         columns = self.main_columns if columns is None else columns

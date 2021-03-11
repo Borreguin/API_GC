@@ -131,4 +131,6 @@ def get_conflict_in_db(e):
         to_send["conflicto"] = filter_dict
         return True, f"Elemento duplicado en conflicto con: {basic_info}", to_send
     except Exception as e:
+        detalle = f"{str(e)} \n {traceback.format_exc()}"
+        error_log.error(detalle)
         return False, f"No se pudo determinar el conflicto", dict()
