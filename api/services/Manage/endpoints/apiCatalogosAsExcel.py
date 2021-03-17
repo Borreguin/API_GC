@@ -1,8 +1,8 @@
 import os
 from random import randint
-from api.services.Catalogos.endpoints import *
-from api.services.Catalogos import serializers as srl
-from api.services.Catalogos import parsers
+from api.services.Manage.endpoints import *
+from api.services.Manage import serializers as srl
+from api.services.Manage import parsers
 from my_lib.utils import create_temporal_excel_from_args, update_or_replace_registers, save_excel_file_from_bytes
 
 ns = api.namespace('catalogo-as-excel', description='Relativas a la administración de catálogos')

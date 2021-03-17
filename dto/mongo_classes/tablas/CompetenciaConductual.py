@@ -79,13 +79,13 @@ class CompetenciaConductualAsDataFrame:
 
         if self.df.empty:
             return False, f"La hoja {self.sheet_name} se encuentra vacía"
-        str_columns = [self.cl_id, self.cl_denominacion_competencia, self.cl_definicion,
+        str_columns = [self.cl_id, self.cl_denominacion_competencia, self.cl_definicion, self.cl_nivel,
                        self.cl_comportamiento_observable]
         success, self.df, msg = u.check_string_in_df(self.df, str_columns)
         if not success:
             return False, msg
 
-        int_columns = [self.cl_nivel]
+        int_columns = [self.cl_item]
         success, self.df, msg = u.check_int_in_df(self.df, int_columns)
         if not success:
             return False, msg
