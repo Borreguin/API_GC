@@ -269,9 +269,10 @@ def update_or_replace_registers(document_to_use, item_list: list, option: str):
                 # it should be update if exists
                 item_db = document_to_use.objects(idx=item.idx).first()
                 if item_db is not None:
-                    # it already exists:
-                    item_db.update(**item.to_update())
-                    n_edited += 1
+                    # it already exists and there are changes:
+                    if item.to_update() != item_db.to_update():
+                        item_db.update(**item.to_update())
+                        n_edited += 1
                     continue
             # it means it can be saved because it is a replace or is a new register
             n_new += 1

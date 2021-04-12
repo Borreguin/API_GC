@@ -33,6 +33,10 @@ class CompetenciaConductual(Document):
                     updated=self.updated.strftime(init.DEFAULT_DATE_FORMAT),
                     document=self.document)
 
+    def to_update(self):
+        return dict(idx=self.idx, denominacion_competencia=self.denominacion_competencia, definicion=self.definicion,
+                    item=self.item, nivel=self.nivel, comportamiento_observable=self.comportamiento_observable)
+
 
 class CompetenciaConductualAsDataFrame:
     def __init__(self, excel_path=None):
