@@ -1,9 +1,10 @@
 import os
 from random import randint
-from api.services.Manage.endpoints import *
-from api.services.Manage import serializers as srl
-from api.services.Manage import parsers
-from my_lib.utils import create_temporal_excel_from_args, update_or_replace_registers, save_excel_file_from_bytes
+from api.services.CatalogosTablas.endpoints import *
+from api.services.CatalogosTablas import serializers as srl
+from api.services.CatalogosTablas import parsers
+from my_lib.utils import create_temporal_excel_from_args, update_or_replace_registers, save_excel_file_from_bytes, \
+    set_max_age_to_response
 
 ns = api.namespace('catalogo-as-excel', description='Relativas a la administración de catálogos')
 
@@ -46,7 +47,8 @@ class AmbitoFromExcel(Resource):
         file_path = os.path.join(init.TEMP_PATH, file_name)
         success, msg = AmbitoAsDataFrame().get_excel_from_db(file_path)
         if success:
-            return send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            resp = send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            return set_max_age_to_response(resp, 2)
         else:
             return dict(success=False, msg=msg), 500
 
@@ -87,7 +89,8 @@ class ConocimientoFromExcel(Resource):
         file_path = os.path.join(init.TEMP_PATH, file_name)
         success, msg = ConocimientoInstitucionalAsDataFrame().get_excel_from_db(file_path)
         if success:
-            return send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            resp = send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            return set_max_age_to_response(resp, 2)
         else:
             return dict(success=False, msg=msg), 500
 
@@ -128,7 +131,8 @@ class InstitucionesExternasFromExcel(Resource):
         file_path = os.path.join(init.TEMP_PATH, file_name)
         success, msg = InstitucionExternaAsDataFrame().get_excel_from_db(file_path)
         if success:
-            return send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            resp = send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            return set_max_age_to_response(resp, 2)
         else:
             return dict(success=False, msg=msg), 500
 
@@ -168,7 +172,8 @@ class MisionFromExcel(Resource):
         file_path = os.path.join(init.TEMP_PATH, file_name)
         success, msg = MisionAsDataFrame().get_excel_from_db(file_path)
         if success:
-            return send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            resp = send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            return set_max_age_to_response(resp, 2)
         else:
             return dict(success=False, msg=msg), 500
 
@@ -208,7 +213,8 @@ class PuestoFuncionarioFromExcel(Resource):
         file_path = os.path.join(init.TEMP_PATH, file_name)
         success, msg = PuestoFuncionarioAsDataFrame().get_excel_from_db(file_path)
         if success:
-            return send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            resp = send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            return set_max_age_to_response(resp, 2)
         else:
             return dict(success=False, msg=msg), 500
 
@@ -248,7 +254,8 @@ class RelacionesInternasFromExcel(Resource):
         file_path = os.path.join(init.TEMP_PATH, file_name)
         success, msg = RelacionInternaAsDataFrame().get_excel_from_db(file_path)
         if success:
-            return send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            resp = send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            return set_max_age_to_response(resp, 2)
         else:
             return dict(success=False, msg=msg), 500
 
@@ -289,6 +296,7 @@ class UnidadAdministrativaFromExcel(Resource):
         file_path = os.path.join(init.TEMP_PATH, file_name)
         success, msg = UnidadAdministrativaAsDataFrame().get_excel_from_db(file_path)
         if success:
-            return send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            resp = send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            return set_max_age_to_response(resp, 2)
         else:
             return dict(success=False, msg=msg), 500

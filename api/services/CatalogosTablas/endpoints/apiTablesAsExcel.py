@@ -1,11 +1,12 @@
 import os
-from random import randint
-from api.services.Manage.endpoints import *
-from api.services.Manage import serializers as srl
-from api.services.Manage import parsers
+import datetime as dt
+from api.services.CatalogosTablas.endpoints import *
+from api.services.CatalogosTablas import serializers as srl
+from api.services.CatalogosTablas import parsers
 from dto.mongo_classes.tablas.CompetenciaConductual import CompetenciaConductualAsDataFrame, CompetenciaConductual
 from dto.mongo_classes.tablas.CompetenciaTecnica import CompetenciaTecnicaAsDataFrame, CompetenciaTecnica
-from my_lib.utils import create_temporal_excel_from_args, update_or_replace_registers, save_excel_file_from_bytes
+from my_lib.utils import create_temporal_excel_from_args, update_or_replace_registers, save_excel_file_from_bytes, \
+    set_max_age_to_response
 
 ns = api.namespace('tables-as-excel', description='Relativas a la administración de tablas')
 
@@ -48,7 +49,8 @@ class CompetenciaConductualFromExcel(Resource):
         file_path = os.path.join(init.TEMP_PATH, file_name)
         success, msg = CompetenciaConductualAsDataFrame().get_excel_from_db(file_path)
         if success:
-            return send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            resp = send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            return set_max_age_to_response(resp, 2)
         else:
             return dict(success=False, msg=msg), 404
 
@@ -87,7 +89,8 @@ class CompetenciaTecnicaFromExcel(Resource):
         file_path = os.path.join(init.TEMP_PATH, file_name)
         success, msg = CompetenciaTecnicaAsDataFrame().get_excel_from_db(file_path)
         if success:
-            return send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            resp = send_from_directory(os.path.dirname(file_path), file_name, as_attachment=True)
+            return set_max_age_to_response(resp, 2)
         else:
             return dict(success=False, msg=msg), 404
 

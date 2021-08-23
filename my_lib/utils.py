@@ -330,3 +330,9 @@ def create_excel_file_from_dicts(path_file, sheet_name, items_as_dict, columns):
         log.error(detalle)
         msg = f"No es posible generar el archivo."
         return False, msg
+
+
+def set_max_age_to_response(response, minutes):
+    response.expires = dt.datetime.utcnow() + dt.timedelta(minutes=minutes)
+    response.cache_control.max_age = minutes * 60
+    return response
