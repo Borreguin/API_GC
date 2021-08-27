@@ -13,4 +13,4 @@ from dto.mongo_classes.catalogos.UnidadAdministrativa import UnidadAdministrativ
 
 
 # configurando logger y el servicio web
-log = init.LogDefaultConfig("ws_service.log").logger
+log = init.LogDefaultConfig("ws_catalogos_tablas.log").logger

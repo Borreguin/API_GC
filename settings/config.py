@@ -5,7 +5,7 @@ import os
 config = dict()
 config["name"] = "API Sistema Central "
 config["API_URL_PREFIX"] = "api-gc3"
-config["version"] = "0.1"
+config["version"] = "0.2"
 config["PORT"] = 7821
 config["DEBUG"] = True
 
@@ -24,8 +24,7 @@ config["INITIAL_ADMIN_EMAIL"] = "admin@local.com"
 config["INITIAL_ADMIN_PASSWORD"] = "123456"
 
 # Log configurations
-config[
-    "ROTATING_FILE_HANDLER_HELP"] = "https://docs.python.org/3.6/library/logging.handlers.html#logging.handlers.RotatingFileHandler.__init__",
+config["ROTATING_FILE_HANDLER_HELP"] = "https://docs.python.org/3.6/library/logging.handlers.html#logging.handlers.RotatingFileHandler.__init__",
 config["ROTATING_FILE_HANDLER"] = {"filename": "auth_app.log", "maxBytes": 5000000, "backupCount": 5, "mode": "a"}
 config["ROTATING_FILE_HANDLER_LOG_LEVEL"] = {"value": "info", "options": ["error", "warning", "info", "debug", "off"]}
 
@@ -39,6 +38,4 @@ config["EXCEL_REPO"] = os.path.join(config["DB_REPO"], "excel_repo")
 config["SUPPORTED_FORMAT_DATES"] = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d", "%Y-%m-%d %H:%M:%S.%f"]
 config["DEFAULT_DATE_FORMAT"] = "%Y-%m-%d %H:%M:%S"
 
-# CALCULOS DISPONIBLES
-config["AVAILABLE_OPERATIONS"] = ["LEAF", "ROOT", "PARALELO", "SERIE", "PONDERADO", "OTROS"]
-config["AVAILABLE_SOURCES"] = [None, "MANUAL", "CÁLCULO", "PISERVER", "OTROS"]
+

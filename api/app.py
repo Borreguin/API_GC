@@ -52,6 +52,7 @@ from api import app
 # namespaces: Todos los servicios de esta API
 from api.services.CatalogosTablas.endpoints.apiCatalogosAsExcel import ns as namespace_catalogos
 from api.services.CatalogosTablas.endpoints.apiTablesAsExcel import ns as namespace_tables
+from api.services.Reportes.endpoints.apiReporteTH import ns as namespace_reportes
 
 """ global variables """
 from api.app_config import log
@@ -69,6 +70,7 @@ def adding_end_points(blueprint, app):
     # añadiendo los servicios de la API (EndPoints)
     api_p.add_namespace(namespace_catalogos)
     api_p.add_namespace(namespace_tables)
+    api_p.add_namespace(namespace_reportes)
 
     # registrando las rutas:
     app.register_blueprint(blueprint)

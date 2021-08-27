@@ -90,9 +90,13 @@ DB_REPO = config["DB_REPO"]
 LOG_REPO = config["LOG_REPO"]
 EXCEL_REPO = config["EXCEL_REPO"]
 
+""" Conexión a servidor Web de Gestión de Conocimiento """
+GCAPP_SERVER_NAME = os.getenv('GCapp_Server', None) if not DEBUG else "QCITBVWGCONOC2"
+GCAPP_USER = os.getenv('GCapp_User', None) if not DEBUG else "gdt_sqluser"
+GCAPP_PASSWORD = os.getenv('GCapp_Password', None) if not DEBUG else "cenace.2021"
+
 """CONFIGURACIÓN DE LA APLICACIÓN"""
-AVAILABLE_OPERATIONS = config["AVAILABLE_OPERATIONS"]
-AVAILABLE_SOURCES = config["AVAILABLE_SOURCES"]
+allowed_formats = ["excel", "json"]
 
 """ LISTA DE REPOSITORIOS """
 REPOS = [TEMP_REPO, DB_REPO, LOG_REPO, EXCEL_REPO]
